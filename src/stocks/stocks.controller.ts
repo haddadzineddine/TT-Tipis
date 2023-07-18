@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
 import { StocksService } from './stocks.service';
 import { sendResponse } from 'src/helpers';
 import { ApiTags } from '@nestjs/swagger';
-import { ProductQuantityDto } from './dto/product-qunatity.dto';
+import { ProductQuantityDto } from './dtos/product-qunatity.dto';
 
 @ApiTags('Stock APIs')
 @Controller('stocks')
