@@ -18,7 +18,7 @@ export class OrdersService {
     private OrderItem: Repository<OrderItem>,
     private productsService: ProductsService,
     private stocksService: StocksService,
-  ) { }
+  ) {}
 
   async create(createOrderDto: CreateOrderDto) {
     const { items, customerName, customerEmail } = createOrderDto;

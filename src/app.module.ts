@@ -15,4 +15,4 @@ import { DATA_BASE_CONFIG } from './config/configuration';
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
