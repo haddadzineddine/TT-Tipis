@@ -22,6 +22,10 @@ $ npm run start
 $ npm run start:dev
 ```
 
+### Navigate To : 
+```
+  http://localhost:3000/api
+```
 ## Stay in touch
 
 - Author - [Zineddine Haddad](https://zineddine.me)
