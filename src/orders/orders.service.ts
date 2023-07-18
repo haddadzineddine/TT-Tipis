@@ -18,7 +18,7 @@ export class OrdersService {
     private OrderItem: Repository<OrderItem>,
     private productsService: ProductsService,
     private stocksService: StocksService,
-  ) {}
+  ) { }
 
   async create(createOrderDto: CreateOrderDto) {
     const { items, customerName, customerEmail } = createOrderDto;
@@ -74,6 +74,10 @@ export class OrdersService {
       this.productsService.findOne(productId),
     ]);
 
+    if (order.status == OrderStatusValues.DONE) {
+      throw new HttpException('Order is already done', 400);
+    }
+
     const orderItem = await this.OrderItem.findOne({
       where: {
         order: { id: orderId },
@@ -107,6 +111,10 @@ export class OrdersService {
       this.findOne(orderId),
       this.productsService.findOne(productId),
     ]);
+
+    if (order.status == OrderStatusValues.DONE) {
+      throw new HttpException('Order is already done', 400);
+    }
 
     const orderItem = await this.OrderItem.findOne({
       where: {
