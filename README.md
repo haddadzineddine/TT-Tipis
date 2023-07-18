@@ -20,7 +20,11 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev
+
+# seed the product table
+$ npm run seed
 ```
+
 
 ### Navigate To : 
 ```
