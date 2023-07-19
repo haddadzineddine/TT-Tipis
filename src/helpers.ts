@@ -1,12 +1,5 @@
-import { HttpStatus } from '@nestjs/common';
-
-export const sendResponse = (
-  message: string,
-  data: any,
-  statusCode: HttpStatus,
-) => {
+export const sendResponse = (message: string, data: any) => {
   return {
-    statusCode,
     message,
     data,
   };

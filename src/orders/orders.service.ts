@@ -41,7 +41,7 @@ export class OrdersService {
     });
   }
 
-  async findOne(id: number) {
+  async findOneOrFail(id: number) {
     const order = await this.ordersRepository.findOne({
       where: { id },
       relations: ['items', 'items.product'],
@@ -55,7 +55,7 @@ export class OrdersService {
   }
 
   async remove(id: number) {
-    const order = await this.findOne(id);
+    const order = await this.findOneOrFail(id);
 
     if (!order) {
       throw new HttpException('Order not found', 404);
@@ -70,8 +70,8 @@ export class OrdersService {
     await this.validateProductAvailability(+productId, +quantity);
 
     const [order, product] = await Promise.all([
-      this.findOne(orderId),
-      this.productsService.findOne(productId),
+      this.findOneOrFail(orderId),
+      this.productsService.findOneByOrFail({ id: productId }),
     ]);
 
     if (order.status == OrderStatusValues.DONE) {
@@ -108,8 +108,8 @@ export class OrdersService {
 
   async removeProduct(orderId: number, productId: number) {
     const [order, product] = await Promise.all([
-      this.findOne(orderId),
-      this.productsService.findOne(productId),
+      this.findOneOrFail(orderId),
+      this.productsService.findOneByOrFail({ id: productId }),
     ]);
 
     if (order.status == OrderStatusValues.DONE) {
@@ -145,13 +145,13 @@ export class OrdersService {
   }
 
   async trackOrder(orderId: number) {
-    const order = await this.findOne(orderId);
+    const order = await this.findOneOrFail(orderId);
 
     return order.status;
   }
 
   async updateStatus(orderId: number, status: OrderStatusValues) {
-    const order = await this.findOne(orderId);
+    const order = await this.findOneOrFail(orderId);
 
     await this.ordersRepository.update(order.id, {
       status,
@@ -187,7 +187,9 @@ export class OrdersService {
 
       await this.validateProductAvailability(productId, quantity);
 
-      const product = await this.productsService.findOne(productId);
+      const product = await this.productsService.findOneByOrFail({
+        id: productId,
+      });
 
       const orderItem = {
         product,

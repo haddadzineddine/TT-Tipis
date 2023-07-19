@@ -1,11 +1,9 @@
-import { OrderItem } from 'src/orders/entities/order-item.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
 
 import { Factory } from 'nestjs-seeder';
@@ -34,9 +32,6 @@ export class Product {
   @Factory(() => Math.floor(Math.random() * 100))
   @Column('int')
   quantity: number;
-
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
-  orderItems: OrderItem[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -9,7 +9,9 @@ export class StocksService {
     productId: number,
     quantity: number,
   ): Promise<boolean> {
-    const product = await this.productsService.findOne(productId);
+    const product = await this.productsService.findOneByOrFail({
+      id: productId,
+    });
     return product.quantity >= quantity;
   }
 
@@ -17,7 +19,9 @@ export class StocksService {
     productId: number,
     quantity: number,
   ): Promise<void> {
-    const product = await this.productsService.findOne(productId);
+    const product = await this.productsService.findOneByOrFail({
+      id: productId,
+    });
 
     if (product.quantity < quantity) {
       throw new HttpException(
@@ -35,7 +39,9 @@ export class StocksService {
     productId: number,
     quantity: number,
   ): Promise<void> {
-    const product = await this.productsService.findOne(productId);
+    const product = await this.productsService.findOneByOrFail({
+      id: productId,
+    });
     product.quantity += quantity;
 
     await this.productsService.update(productId, product);

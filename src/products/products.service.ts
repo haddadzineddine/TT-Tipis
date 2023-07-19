@@ -1,9 +1,14 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { FindOneByCondition } from './types';
 
 @Injectable()
 export class ProductsService {
@@ -14,11 +19,7 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDto) {
     const { name } = createProductDto;
-    const product = await this.findByName(name);
-
-    if (product) {
-      throw new HttpException('Product with this name already exists', 400);
-    }
+    await this.isNameAlreadyExists(name);
 
     return await this.productsRepository.save(createProductDto);
   }
@@ -27,42 +28,40 @@ export class ProductsService {
     return await this.productsRepository.find();
   }
 
-  async findOne(id: number) {
-    const product = await this.productsRepository.findOneBy({ id: id });
+  async findOneBy(conditions: FindOneByCondition) {
+    return await this.productsRepository.findOneBy(conditions);
+  }
+
+  async findOneByOrFail(conditions: FindOneByCondition) {
+    const product = await this.findOneBy(conditions);
 
     if (!product) {
-      throw new HttpException('Product not found', 404);
+      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     }
 
     return product;
   }
 
-  async findByName(name: string) {
-    return await this.productsRepository.findOneBy({ name: name });
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    await this.findOneByOrFail({ id: id });
+    await this.productsRepository.update(id, updateProductDto);
   }
 
-  async findAllByIds(ids: number[]) {
-    const products = [];
+  async remove(id: number) {
+    await this.findOneByOrFail({ id: id });
+    await this.productsRepository.delete(id);
+  }
 
-    for (const id of ids) {
-      const product = await this.findOne(id);
-      products.push(product);
+  private async isNameAlreadyExists(name: string) {
+    const product = await this.findOneBy({ name: name });
+
+    if (product) {
+      throw new HttpException(
+        `Product with this name ${name} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    return products;
-  }
-
-  update(id: number, updateProductDto: UpdateProductDto) {
-    const product = this.findOne(id);
-
-    if (!product) {
-      throw new HttpException('Product not found', 404);
-    }
-
-    return this.productsRepository.update(id, updateProductDto);
-  }
-
-  remove(id: number) {
-    return this.productsRepository.delete(id);
+    return product;
   }
 }
