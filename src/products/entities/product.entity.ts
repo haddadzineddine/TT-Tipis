@@ -29,6 +29,10 @@ export class Product {
   @Column({ length: 500 })
   category: string;
 
+  @Factory((faker) => faker.image.url())
+  @Column({ default: 'https://picsum.photos/200/300' })
+  image: string;
+
   @Factory(() => Math.floor(Math.random() * 100))
   @Column('int')
   quantity: number;

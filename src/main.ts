@@ -8,6 +8,7 @@ import { PORT } from './config/configuration';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
 
   const document = SwaggerModule.createDocument(app, swaggerOptions);
 
