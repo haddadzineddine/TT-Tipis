@@ -18,7 +18,7 @@ export class OrdersService {
     private OrderItem: Repository<OrderItem>,
     private productsService: ProductsService,
     private stocksService: StocksService,
-  ) {}
+  ) { }
 
   async create(createOrderDto: CreateOrderDto) {
     const { items, customerName, customerEmail } = createOrderDto;
@@ -38,6 +38,9 @@ export class OrdersService {
   findAll() {
     return this.ordersRepository.find({
       relations: ['items', 'items.product'],
+      order: {
+        updatedAt: 'DESC',
+      },
     });
   }
 

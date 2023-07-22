@@ -29,7 +29,7 @@ export class Product {
   @Column({ length: 500 })
   category: string;
 
-  @Factory((faker) => faker.image.url())
+  @Factory((faker) => faker.image.urlLoremFlickr())
   @Column({ default: 'https://picsum.photos/200/300' })
   image: string;
 
